@@ -1,0 +1,19 @@
+#!/bin/bash
+#create rsync script for crontab.
+if [ "-h" = "$1" ];then
+ echo './drsync -i <user> <local dir> <remote address>'
+ exit 0
+fi
+if [ "-i" = "$1" ];then
+ echo "* * * * * /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ echo "* * * * * sleep 10; /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ echo "* * * * * sleep 20; /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ echo "* * * * * sleep 30; /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ echo "* * * * * sleep 40; /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ echo "* * * * * sleep 50; /usr/bin/drsync $3 $4 ">>/var/spool/cron/$2
+ cp $0 /usr/bin
+ exit 0
+fi
+/usr/bin/rsync -qaxvP $2 $1
+/usr/bin/rsync -qaxvP --include=+.inc --include-from=$1/.inc $1 $2
+
