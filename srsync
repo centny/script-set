@@ -1,0 +1,25 @@
+#!/bin/bash
+if [ "$1" = "" ];then
+ echo 'srsync <local dir> <remote address>'
+ exit 0
+fi
+if [ "-h" = "$1" ];then
+ echo 'srsync <local dir> <remote address>'
+ exit 0
+fi
+if [ "-i" = "$1" ];then
+ cp $0 /usr/bin
+ exit 0
+fi
+for((i=0;1;i++));
+do
+ if [ -f "$1/.inc" ];then
+  echo "syncing->inc->$i"
+  /usr/bin/rsync -qaxvP --delete --include=.inc --include=.exc --include-from=$1/.inc $1 $2
+ else 
+  echo "syncing->->$i"
+  /usr/bin/rsync -qaxvP --delete $1 $2
+ fi
+ sleep 8
+done
+
