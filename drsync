@@ -14,8 +14,8 @@ if [ "-i" = "$1" ];then
  cp $0 /usr/bin
  exit 0
 fi
-if [ -f "$1/.exc" ];then
- /usr/bin/rsync -qaxvP --delete-after --exclude-from=$1/.exc $2 $1
+if [ -f "$1/exc.txt" ];then
+ /usr/bin/rsync -qaxvP --delete-after --exclude-from=$1/exc.txt $2 $1
 else 
  /usr/bin/rsync -qaxvP --delete-after $2 $1
 fi
