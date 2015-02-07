@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -e
 cd `dirname ${0}`
 ws_d=bk.ws
@@ -7,15 +7,17 @@ exe_f=$ws_d/ec
 up_d=$ws_d/up
 date_f=$ws_d/date
 
-dfd=7		#do full backup time
-usr=root	#the mysql user.
-pwd=sco		#the mysql password.
-dbs=bk		#the backup database name.
-ftp_u=cny 	#the ftp server user name.
-ftp_p=sco	#the ftp password.
-ftp_h=localhost	#the ftp host.
-binl=backu	#the backup log_bin name.
+dfd=7						#do full backup time
+usr=root					#the mysql user.
+pwd=						#the mysql password.
+dbs=bk						#the backup database name.
+ftp_u=cny 					#the ftp server user name.
+ftp_p=						#the ftp password.
+ftp_h=localhost				#the ftp host.
+binl=backu					#the backup log_bin name.
+bps="/tmp/ab1 /tmp/ab2" 	#extend backup path.
 
+#
 #do init
 now=`date +%Y%m%d`
 if [ ! -d $ws_d ];then
@@ -67,7 +69,15 @@ dobacku_f(){
  echo $now>$date_f
  echo "full backup success $now">>$log_f
 }
-
+dobps(){
+ for tp in $bps;do
+  echo "backup file to $tp">>$log_f
+  cp -rfu $ws_d $tp
+ done
+}
+#
+#
+#
 ecv=`cat $exe_f`
 if [ $ecv -lt $dfd ];then
  dobacku_d N
@@ -77,4 +87,6 @@ else
  dobacku_f
  echo 0 >$exe_f
 fi
+
+dobps
 curl -s -u $ftp_u:$ftp_p --ftp-create-dirs -T $ws_d/b.log ftp://$ftp_h/
