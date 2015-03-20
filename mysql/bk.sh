@@ -63,7 +63,7 @@ dobacku_f(){
  echo "<<<<<<<<-------FULL------->>>>>>>>>">>$log_f
  echo "exec full backup $now">>$log_f
  mkdir -p $up_d/$now
- mysqldump -u$usr -p$pwd --opt --flush-logs $dbs> $up_d/$now/db.mdb
+ mysqldump -u$usr -p$pwd --opt --flush-logs --databases $dbs> $up_d/$now/db.mdb
  dobacku_d Y
  curl -s -u $ftp_u:$ftp_p --ftp-create-dirs -T $up_d/$now/db.mdb ftp://$ftp_h/$now/
  echo $now>$date_f
