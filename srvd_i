@@ -12,7 +12,7 @@ install(){
 	tpwd=`pwd`
 	tpwd=${tpwd//\//\\\/}
 	echo "s/RV_SRVD_HOME/$tpwd/g"
-	sed "s/RV_SRVD_HOME/$tpwd/g" ./$name_d >/etc/init.d/$name_d
+	sed "s/RV_SRVD_HOME/$tpwd/g" ./$name_d | sed "s/RV_SRVD_USR/$usr_n/g" >/etc/init.d/$name_d
 	chmod +x /etc/init.d/$name_d
 
 	mkdir /var/log/$name_d
