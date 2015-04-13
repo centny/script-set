@@ -1,5 +1,9 @@
 #!/bin/bash
 name_d=$2
+usr_n=$3
+if [ "$usr_n" == "" ];then
+	usr_n=$name_d
+fi 
 
 
 install(){
@@ -12,7 +16,7 @@ install(){
 	chmod +x /etc/init.d/$name_d
 
 	mkdir /var/log/$name_d
-	chown -R $name_d /var/log/$name_d
+	chown -R $usr_n /var/log/$name_d
 	##
 	chkconfig --add $name_d
 	chkconfig $name_d on
