@@ -1,36 +1,41 @@
 #!/bin/bash
-name_d=$2
+#
+tpwd=`pwd`
+tpwd=${tpwd//\//\\\/}
+srv_h=$tpwd
+exe_n=$2
 usr_n=$3
-if [ "$4" != "" ];then
-	name_d=$4
-fi
+srv_n=$4
 
 if [ "$usr_n" == "" ];then
-	usr_n=$name_d
+	usr_n=$exe_n"d"
+fi
+
+if [ "$srv_n" == "" ];then
+	srv_n=$usr_n
 fi 
 
 
 install(){
-	tpwd=`pwd`
-	tpwd=${tpwd//\//\\\/}
+	echo "Install $srv_n by home($srv_h),exe($exe_n),user($usr_n)"
 	echo "s/RV_SRVD_HOME/$tpwd/g"
-	sed "s/RV_SRVD_HOME/$tpwd/g" ./$name_d | sed "s/RV_SRVD_USR/$usr_n/g" >/etc/init.d/$name_d
-	chmod +x /etc/init.d/$name_d
+	sed "s/RV_SRVD_HOME/$tpwd/g" ./srvd | sed "s/RV_SRVD_USR/$usr_n/g" | sed "s/RV_SRVD_EXE/$exe_n/g" | sed "s/RV_SRVD_SRV/$srv_n/g" >/etc/init.d/$srv_n
+	chmod +x /etc/init.d/$srv_n
 
-	mkdir /var/log/$name_d
-	chown -R $usr_n /var/log/$name_d
+	mkdir /var/log/$srv_n
+	chown -R $usr_n /var/log/$srv_n
 	##
-	chkconfig --add $name_d
-	chkconfig $name_d on
-	service $name_d start
-	echo "Install Done..."
+	chkconfig --add $srv_n
+	chkconfig $srv_n on
+	#service $srv_n start
+	echo "Install $srv_n Done..."
 }
 uninstall(){
-	service $name_d stop
-	rm -rf /var/log/$name_d
-	chkconfig --del $name_d
-	rm -f /etc/init.d/$name_d
-	echo "Uninstall Done..."
+	service $srv_n stop
+	rm -rf /var/log/$srv_n
+	chkconfig --del $srv_n
+	rm -f /etc/init.d/$srv_n
+	echo "Uninstall $srv_n Done..."
 }
 
 case $1 in
