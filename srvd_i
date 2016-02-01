@@ -7,8 +7,6 @@ fi
 
 
 install(){
-	yum install daemonize -y
-
 	tpwd=`pwd`
 	tpwd=${tpwd//\//\\\/}
 	echo "s/RV_SRVD_HOME/$tpwd/g"
