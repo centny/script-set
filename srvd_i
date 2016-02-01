@@ -1,6 +1,10 @@
 #!/bin/bash
 name_d=$2
 usr_n=$3
+if [ "$4" != "" ];then
+	name_d=$4
+fi
+
 if [ "$usr_n" == "" ];then
 	usr_n=$name_d
 fi 
