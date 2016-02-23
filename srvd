@@ -13,6 +13,7 @@ srv_h=RV_SRVD_HOME
 usr_n=RV_SRVD_USR
 exe_n=RV_SRVD_EXE
 srv_n=RV_SRVD_SRV
+arg_l="RV_SRVD_ARG"
 
 ##
 pid_f=/var/run/$srv_n.pid
