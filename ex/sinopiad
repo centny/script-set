@@ -9,7 +9,7 @@
 
 export LD_LIBRARY_PATH=/usr/local/lib
 RETVAL=0
-srv_h=/home/sinopiad
+srv_h=/home/sinopia
 usr_n=sinopia
 exe_n=sinopia
 srv_n=sinopiad
@@ -18,7 +18,7 @@ arg_l=""
 ##
 pid_f=/var/run/$srv_n.pid
 lck_f=/var/lock/$srv_n.lock
-exec=/usr/local/bin/sinopia
+exec=/usr/bin/sinopia
 if [ ! -x $exec ];then
     echo "Please check %v is exist and executable"
     exit 5
