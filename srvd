@@ -6,7 +6,7 @@
 
 # Source function library.
 . /etc/init.d/functions
-
+set -e
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 RETVAL=0
 srv_h=RV_SRVD_HOME
