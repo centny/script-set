@@ -14,6 +14,7 @@ usr_n=RV_SRVD_USR
 exe_n=RV_SRVD_EXE
 srv_n=RV_SRVD_SRV
 arg_l="RV_SRVD_ARG"
+pre_s=RV_SRVD_PRE
 
 ##
 pid_f=/var/run/$srv_n.pid
@@ -26,6 +27,9 @@ fi
 
 start() {
     [ -x $exec ] || exit 5
+    if [ "$pre_s" != "" ];then
+        . $pre_s
+    fi
     #umask 077
         echo -n "Starting $srv_n server: "
         daemonize -v -a -o /var/log/$srv_n/out.log -e /var/log/$srv_n/err.log -c $srv_h -p $pid_f -u $usr_n -l $lck_f $exec $arg_l
