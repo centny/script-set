@@ -3,11 +3,11 @@
 tpwd=`pwd`
 tpwd=${tpwd//\//\\\/}
 srv_h=$tpwd
-exe_n=$2
-usr_n=$3
-srv_n=$4
-arg_l="$5"
-pre_s=$6
+exe_n=${2//\//\\\/}
+usr_n=${3//\//\\\/}
+srv_n=${4//\//\\\/}
+arg_l=${5//\//\\\/}
+pre_s=${6//\//\\\/}
 
 if [ "$usr_n" == "" ];then
 	usr_n=$exe_n"d"
