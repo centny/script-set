@@ -14,7 +14,7 @@ usr_n=RV_SRVD_USR
 exe_n=RV_SRVD_EXE
 srv_n=RV_SRVD_SRV
 arg_l="RV_SRVD_ARG"
-pre_s=$RV_SRVD_PRE
+pre_s=RV_SRVD_PRE
 if [ "$pre_s" == "" ];then
     pre_s=$ENV_SRVD_PRE
 fi
