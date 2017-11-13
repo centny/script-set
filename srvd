@@ -7,7 +7,6 @@
 # Source function library.
 . /etc/init.d/functions
 
-export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 RETVAL=0
 srv_h=RV_SRVD_HOME
 usr_n=RV_SRVD_USR
@@ -18,6 +17,8 @@ pre_s=RV_SRVD_PRE
 if [ "$pre_s" == "" ];then
     pre_s=$ENV_SRVD_PRE
 fi
+
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:$srv_h
 
 ##
 pid_f=/var/run/$srv_n.pid
