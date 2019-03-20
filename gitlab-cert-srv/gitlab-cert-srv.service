@@ -1,0 +1,13 @@
+[Unit]
+Description=gitlab cert service
+After=network.target
+
+[Service]
+User=cert
+Restart=always
+WorkingDirectory=/home/cert
+ExecStart=/home/cert/gitlab-cert-srv/cert-srv.sh
+# EnvironmentFile=/etc/ums-srv/ums-srv.env
+
+[Install]
+WantedBy=multi-user.target
