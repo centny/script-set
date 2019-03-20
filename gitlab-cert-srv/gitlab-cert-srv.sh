@@ -25,7 +25,7 @@ proc_gitlab(){
         fi
         if [ ! -f $nginx_out/$branch$4.conf ];then
                 mkdir -p $nginx_out/
-                cat gitlab-cert-tmpl.conf | sed -i "s/CERT_HOME/$branch$4/g" > $nginx_out/$branch$4.conf
+                sed "s/CERT_HOST/$branch$4/g" gitlab-cert-tmpl.conf > $nginx_out/$branch$4.conf
         fi
     done
 }
