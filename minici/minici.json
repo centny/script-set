@@ -1,0 +1,17 @@
+{
+    "addr": ":1992",
+    "parallel": 0,
+    "www": "www",
+    "cmds": {
+        "echo": {
+            "path": "echo",
+            "log": "www/logs/echo.log"
+        },
+        "sleep": {
+            "path": "sleep"
+        }
+    },
+    "username": "test",
+    "password": "123",
+    "log": 40
+}

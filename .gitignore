@@ -1,0 +1,6 @@
+
+minici/build
+minici/www
+*.out
+minici/coverage.json
+minici/coverage.html

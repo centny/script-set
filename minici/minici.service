@@ -1,0 +1,13 @@
+[Unit]
+Description=minici service
+After=network.target
+
+[Service]
+User=minici
+Restart=always
+WorkingDirectory=/home/minici
+ExecStart=/home/minici/srv/minici
+EnvironmentFile=/etc/minici/minici.env
+
+[Install]
+WantedBy=multi-user.target
