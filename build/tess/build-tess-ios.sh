@@ -1,5 +1,9 @@
 #!/bin/bash
 
+export LANGUAGE="en_US.UTF-8"
+export LANG=en_US.UTF-8
+export LC_ALL=C
+
 set -e
 
 absdir() {
@@ -45,61 +49,61 @@ case $1 in
     ;;
 esac
 
-cd $source_dir/libjpeg/
-autoreconf -fi
-$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/libjpeg/
+# autoreconf -fi
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
-cd $source_dir/libpng/
-autoreconf -fi
-$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/libpng/
+# autoreconf -fi
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
-cd $source_dir/tiff/
-autoreconf -fi
-$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/tiff/
+# autoreconf -fi
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
-cd $source_dir/libwebp
-./autogen.sh
-$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/libwebp
+# ./autogen.sh
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
 cd $source_dir/openjpeg
 rm -rf build
 mkdir -p build
 cd build
-cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DBUILD_SHARED_LIBS:BOOL=OFF
+cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DARCHS=$1 -DBUILD_SHARED_LIBS:BOOL=OFF -DENABLE_BITCODE=ON
 make clean
 make -j $runc
 make install
 cd ../../
 
-cd $source_dir/leptonica
-autoreconf -fi
-$script_dir/../ios-autotools/iconfigure $1 --disable-programs --enable-shared=no
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/leptonica
+# autoreconf -fi
+# $script_dir/../ios-autotools/iconfigure $1 --disable-programs --enable-shared=no
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
-cd $source_dir/tesseract
-./autogen.sh
-$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no --with-libcurl=no
-make clean
-make -j5
-make install
-cd ../
+# cd $source_dir/tesseract
+# ./autogen.sh
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no --with-libcurl=no
+# make clean
+# make -j5
+# make install
+# cd ../
 
