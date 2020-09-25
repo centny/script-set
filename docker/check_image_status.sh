@@ -7,7 +7,7 @@ if [ "$containerLabel" == "" ];then
 fi
 
 echo "start checking docker install"
-dockerVer=`docker -v`
+dockerVer=$(docker -v)
 if [ "$?" != "0" ];then
     echo '====<RESULT>==='
     echo 'status=NoSetup'
@@ -16,7 +16,7 @@ if [ "$?" != "0" ];then
 fi
 printf "check docker install done, using $dockerVer\n\n\n"
 
-dockerInfo=`docker info`
+dockerInfo=$(docker info)
 if [ "$?" != "0" ];then
     echo "check docker if running fail with "
     echo $dockerInfo
@@ -33,7 +33,7 @@ fi
 echo "check docker info done, info is"
 printf "$dockerInfo\n\n\n"
 
-containerID=`docker ps -aqf "label=$containerLabel"`
+containerID=$(docker ps -aqf "label=$containerLabel")
 if [ "$?" != "0" ];then
     echo 'docker ps container fail with '
     echo $containerID
@@ -51,7 +51,7 @@ if [ "$containerID" == "" ];then
     echo 'message=container is not found'
     exit 0
 fi
-containerCount=`echo $containerID | wc -l`
+containerCount=$(echo $containerID | wc -l)
 if [ "$containerCount" != "1" ];then
     echo '====<RESULT>==='
     echo 'status=ERROR'
@@ -59,8 +59,8 @@ if [ "$containerCount" != "1" ];then
     exit 0
 fi
 
-containerImage=`docker inspect --format '{{.Image}}' $containerID`
-containerStatus=`docker inspect --format '{{.State.Status}}' $containerID`
+containerImage=$(docker inspect --format '{{.Image}}' $containerID)
+containerStatus=$(docker inspect --format '{{.State.Status}}' $containerID)
 if [ "$containerStatus" != "running" ];then
     echo '====<RESULT>==='
     echo 'status=ERROR'
@@ -69,7 +69,7 @@ if [ "$containerStatus" != "running" ];then
     echo 'container_status='$containerStatus
     exit 0
 fi
-containerHealth=`docker inspect --format '{{.State.Health.Status}}' $containerID`
+containerHealth=$(docker inspect --format '{{.State.Health.Status}}' $containerID)
 if [ "$?" != "0" ];then
     echo 'docker inspect health fail with '
     echo $containerHealth
