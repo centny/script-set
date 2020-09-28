@@ -8,6 +8,9 @@ dataID=""
 accessID=""
 workingDir="/srv"
 baseURI="http://127.0.0.1:5010/web/data"
+dbAdminURI="mongodb://admin:123@172.18.1.107:27017/admin"
+dbAddUser='use abc;var userObj=db.getUser("abc");userObj || db.createUser({user: "abc",pwd: "123",roles: [ "readWrite", "dbAdmin" ]});'
+dbUserURI="mongodb://abc:123@172.18.1.107:27017/abc"
 
 if [ "$containerImage" == "" ];then
     containerImage=$1
@@ -72,21 +75,38 @@ if [ "$dataOK" != "yes" ];then
     fi
 fi
 
-echo "uncompress $dataFile"
+echo "extracting $dataFile"
 rm -rf $accessID
 tar zxvf $dataFile
 if [ "$?" != "0" ];then
-    echo 'uncompress fail'
+    echo 'extracting fail'
     echo '====<RESULT>==='
     echo 'status=ERROR'
-    echo 'message=uncompress fail'
+    echo 'message=extracting fail'
     exit 0
 fi
 if [ ! -d "$accessID" ];then
-    echo 'uncompress fail with folder not exists'
+    echo 'extracting fail with folder not exists'
     echo '====<RESULT>==='
     echo 'status=ERROR'
-    echo 'message=uncompress fail with folder not exists'
+    echo 'message=extracting fail with folder not exists'
+    exit 0
+fi
+
+mongo "$dbURI" < "$dbAddUser"
+if [ "$?" != "0" ];then
+    echo 'mongo add user fail with '
+    echo '====<RESULT>==='
+    echo 'status=ERROR'
+    echo 'message=mongo add user fail'
+    exit 0
+fi
+mongorestore "$dbUserURI" --drop --dir $accessID/db/
+if [ "$?" != "0" ];then
+    echo 'mongo restore fail with '
+    echo '====<RESULT>==='
+    echo 'status=ERROR'
+    echo 'message=mongo restore fail'
     exit 0
 fi
 
