@@ -4,6 +4,10 @@ containerLabel=""
 containerName=""
 containerArgs=""
 clearInstall="0"
+dataID=""
+accessID=""
+workingDir="/srv"
+baseURI="http://127.0.0.1:5010/web/data"
 
 if [ "$containerImage" == "" ];then
     containerImage=$1
@@ -19,6 +23,71 @@ if [ "$containerImage" == "" ];then
     if [ "$5" != "" ];then
         containerArgs="$5"
     fi
+fi
+
+checksumFile=$dataID.checksum
+dataFile=$dataID.tar.gz
+dataOK="no"
+if [ -f "$checksumFile" ] && [ -f "$dataFile" ];then
+    echo "$dataFile is found, verify it"
+    sha1sum -c $checksumFile
+    if [ "$?" != "0" ];then
+        echo 'checksum verify fail, remove it '
+        rm -f $checksumFile $dataFile
+    else 
+        echo 'checksum verify is ok '
+        dataOK="yes"
+    fi
+fi
+
+if [ "$dataOK" != "yes" ];then
+    echo "download checksum file from $baseURI/$dataID.checksum?access_id=$accessID"
+    wget "$baseURI/$dataID.checksum?access_id=$accessID" -o $checksumFile
+    if [ "$?" != "0" ];then
+        echo 'download checksum file fail '
+        echo '====<RESULT>==='
+        echo 'status=ERROR'
+        echo 'message=download checksum file fail'
+        exit 0
+    fi
+    echo "download data file from $baseURI/$dataID.tar.gz?access_id=$accessID"
+    wget "$baseURI/$dataID.tar.gz?access_id=$accessID" -o $checksumFile
+    if [ "$?" != "0" ];then
+        echo 'download data file fail '
+        echo '====<RESULT>==='
+        echo 'status=ERROR'
+        echo 'message=download data file fail'
+        exit 0
+    fi
+    sha1sum -c $checksumFile
+    if [ "$?" != "0" ];then
+        echo 'verify data file fail '
+        echo '====<RESULT>==='
+        echo 'status=ERROR'
+        echo 'message=verify data file fail'
+        exit 0
+    else 
+        echo 'checksum verify is ok '
+        dataOK="yes"
+    fi
+fi
+
+echo "uncompress $dataFile"
+rm -rf $accessID
+tar zxvf $dataFile
+if [ "$?" != "0" ];then
+    echo 'uncompress fail'
+    echo '====<RESULT>==='
+    echo 'status=ERROR'
+    echo 'message=uncompress fail'
+    exit 0
+fi
+if [ ! -d "$accessID" ];then
+    echo 'uncompress fail with folder not exists'
+    echo '====<RESULT>==='
+    echo 'status=ERROR'
+    echo 'message=uncompress fail with folder not exists'
+    exit 0
 fi
 
 containerID=$(docker ps -aqf "label=$containerLabel")
