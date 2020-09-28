@@ -1,34 +1,23 @@
 #!/bin/bash
-containerImage=""
-containerLabel=""
-containerName=""
-containerArgs=""
+containerImage="docker.dev.gdy.io/xkz:v1.0.0"
+containerLabel="abc"
+containerName="abc"
+containerArgs="-p 1841:1841 -p 2010:2010 -p 1973:1973 -p 1971:1971 -p 6372:6372 -v /data/abc:/data -e XKZ_COMMON_MAIN_HOST=172.18.1.102"
 clearInstall="0"
-dataID=""
-accessID=""
-workingDir="/srv"
-baseURI="http://127.0.0.1:5010/web/data"
-dbAdminURI="mongodb://admin:123@172.18.1.107:27017/admin"
-dbAddUser='use abc;var userObj=db.getUser("abc");userObj || db.createUser({user: "abc",pwd: "123",roles: [ "readWrite", "dbAdmin" ]});'
-dbUserURI="mongodb://abc:123@172.18.1.107:27017/abc"
+dataID=$'abc'
+accessID=$'localdev'
+workingDir=$'/data/'
+baseURI=$'http://127.0.0.1:5010/web/data'
+dbHost=$'172.18.1.107'
+dbPort=$'27017'
+dbAdminUser=$'admin'
+dbAdminPass=$'123'
+dbAddName=$'abc'
+dbAddUser=$'abc'
+dbAddPass=$'123'
 
-if [ "$containerImage" == "" ];then
-    containerImage=$1
-    containerLabel=$2
-    if [ "$3" == "" ];then
-        containerName=$containerLabel
-    else
-        containerName=$3
-    fi
-    if [ "$4" != "" ];then
-        clearInstall="$4"
-    fi
-    if [ "$5" != "" ];then
-        containerArgs="$5"
-    fi
-fi
-
-checksumFile=$dataID.checksum
+cd $workingDir
+checksumFile=$dataID.tar.gz.sha1
 dataFile=$dataID.tar.gz
 dataOK="no"
 if [ -f "$checksumFile" ] && [ -f "$dataFile" ];then
@@ -44,8 +33,8 @@ if [ -f "$checksumFile" ] && [ -f "$dataFile" ];then
 fi
 
 if [ "$dataOK" != "yes" ];then
-    echo "download checksum file from $baseURI/$dataID.checksum?access_id=$accessID"
-    wget "$baseURI/$dataID.checksum?access_id=$accessID" -o $checksumFile
+    echo "download checksum file from $baseURI/$dataID.tar.gz.sha1?access_id=$accessID"
+    wget "$baseURI/$dataID.tar.gz.sha1?access_id=$accessID" -O $checksumFile
     if [ "$?" != "0" ];then
         echo 'download checksum file fail '
         echo '====<RESULT>==='
@@ -54,7 +43,7 @@ if [ "$dataOK" != "yes" ];then
         exit 0
     fi
     echo "download data file from $baseURI/$dataID.tar.gz?access_id=$accessID"
-    wget "$baseURI/$dataID.tar.gz?access_id=$accessID" -o $checksumFile
+    wget "$baseURI/$dataID.tar.gz?access_id=$accessID" -O $dataFile
     if [ "$?" != "0" ];then
         echo 'download data file fail '
         echo '====<RESULT>==='
@@ -85,15 +74,19 @@ if [ "$?" != "0" ];then
     echo 'message=extracting fail'
     exit 0
 fi
-if [ ! -d "$accessID" ];then
+if [ ! -d "$dataID" ];then
     echo 'extracting fail with folder not exists'
     echo '====<RESULT>==='
     echo 'status=ERROR'
     echo 'message=extracting fail with folder not exists'
     exit 0
 fi
-
-mongo "$dbURI" < "$dbAddUser"
+dbAdminURI="mongodb://$dbAdminUser:$dbAdminPass@$dbHost:$dbPort/admin"
+echo "start add user to $dbAdminURI"
+mongo "$dbAdminURI" << EOF
+use abc;
+db.getUser("$dbAddUser") || db.createUser({user: "$dbAddUser",pwd: "$dbAddPass",roles: [ "readWrite", "dbAdmin" ]});
+EOF
 if [ "$?" != "0" ];then
     echo 'mongo add user fail with '
     echo '====<RESULT>==='
@@ -101,7 +94,10 @@ if [ "$?" != "0" ];then
     echo 'message=mongo add user fail'
     exit 0
 fi
-mongorestore "$dbUserURI" --drop --dir $accessID/db/
+
+dbUserURI="mongodb://$dbAddUser:$dbAddPass@$dbHost:$dbPort/$dbAddName"
+echo "start restore data to $dbUserURI"
+mongorestore -h $dbHost -p $dbPort -d $dbAddName --drop --dir $dataID/db/
 if [ "$?" != "0" ];then
     echo 'mongo restore fail with '
     echo '====<RESULT>==='
