@@ -1,0 +1,22 @@
+server {
+	listen 80;
+	server_name sxbastudio;
+	return 301 https://$host$request_uri;
+}
+server {
+	listen   443 ssl;
+	server_name sxbastudio;
+	access_log /var/log/nginx/sxbastudio.log;
+	error_log /var/log/nginx/sxbastudio.log;
+	ssl_certificate      /etc/letsencrypt/live/sxbastudio/fullchain.pem;
+	ssl_certificate_key  /etc/letsencrypt/live/sxbastudio/privkey.pem;
+	location / {
+		proxy_redirect off;
+		proxy_pass   http://dev.local;
+		proxy_no_cache 1;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		client_max_body_size 256m;
+	}
+}

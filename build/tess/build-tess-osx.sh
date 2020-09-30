@@ -6,15 +6,15 @@ absdir() {
   echo "$(cd "$1" && pwd)"
 }
 
-script_dir=`dirname ${0}`
+script_dir=$(dirname ${0})
 install_dir=$HOME/deps/osx
 source_dir=$HOME/deps_src/
 
-if [ ! -z "$PREFIX" ];then
-    install_dir=$PREFIX
+if [ ! -z "$PREFIX" ]; then
+  install_dir=$PREFIX
 fi
-if [ ! -z "$SOURCE" ];then
-    source_dir=$SOURCE
+if [ ! -z "$SOURCE" ]; then
+  source_dir=$SOURCE
 fi
 
 mkdir -p $install_dir
@@ -28,7 +28,6 @@ echo "running by source dir:"$source_dir
 export PREFIX=$install_dir
 export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig/
 runc=16
-
 
 cd $source_dir/libjpeg/
 autoreconf -fi
@@ -66,7 +65,7 @@ cd $source_dir/openjpeg
 rm -rf build
 mkdir -p build
 cd build
-cmake ..  -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DBUILD_SHARED_LIBS:BOOL=OFF
+cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DBUILD_SHARED_LIBS:BOOL=OFF
 make clean
 make -j $runc
 make install
@@ -87,4 +86,3 @@ make clean
 make -j $runc
 make install
 cd ../
-

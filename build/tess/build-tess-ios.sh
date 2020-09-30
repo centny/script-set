@@ -3,17 +3,17 @@
 set -e
 
 absdir() {
-  echo "$(cd "$1" && pwd)"
+    echo "$(cd "$1" && pwd)"
 }
 
-script_dir=`dirname ${0}`
+script_dir=$(dirname ${0})
 install_dir=$HOME/deps/ios/$1/
 source_dir=$HOME/deps_src/
 
-if [ ! -z "$PREFIX" ];then
+if [ ! -z "$PREFIX" ]; then
     install_dir=$PREFIX
 fi
-if [ ! -z "$SOURCE" ];then
+if [ ! -z "$SOURCE" ]; then
     source_dir=$SOURCE
 fi
 
@@ -31,16 +31,16 @@ export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig/
 runc=16
 platform=""
 case $1 in
-    armv7)
+armv7)
     platform=OS
     ;;
-    arm64)
+arm64)
     platform=OS64
     ;;
-    i386)
+i386)
     platform=SIMULATOR
     ;;
-    x86_64)
+x86_64)
     platform=SIMULATOR64
     ;;
 esac
@@ -81,7 +81,7 @@ cd $source_dir/openjpeg
 rm -rf build
 mkdir -p build
 cd build
-cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DBUILD_SHARED_LIBS:BOOL=OFF
+cmake .. -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DBUILD_SHARED_LIBS:BOOL=OFF
 make clean
 make -j $runc
 make install
@@ -102,4 +102,3 @@ make clean
 make -j5
 make install
 cd ../
-
