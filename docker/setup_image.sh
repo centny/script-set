@@ -4,6 +4,8 @@ containerLabel=""
 containerName=""
 containerArgs=""
 clearInstall="0"
+dataPath=""
+backPath=""
 
 if [ "$containerImage" == "" ];then
     containerImage=$1
@@ -30,6 +32,17 @@ if [ "$?" != "0" ];then
     echo 'message=docker ps container fail'
     exit 0
 fi
+
+if [ "$dataPath" != "" ] && [ "$backPath" != "" ] &&  [ -d "$dataPath" ];then
+    mv $dataPath $backPath
+    if [ "$?" != "0" ];then
+        echo 'backup data fail '
+        echo '====<RESULT>==='
+        echo 'status=ERROR'
+        echo 'message=backup data fail '
+        exit 0
+    fi
+if
 
 if [ "$clearInstall" == "1" ] && [ "$containerID" != "" ];then
     echo "start stop container $containerID"
