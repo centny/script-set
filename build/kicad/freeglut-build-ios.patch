@@ -1,0 +1,110 @@
+From 09ceb66609e623d7cc655997e1cc096e881065aa Mon Sep 17 00:00:00 2001
+From: centny <centny@gmail.com>
+Date: Sun, 22 Nov 2020 03:03:52 -0800
+Subject: [PATCH] build for ios
+
+---
+ freeglut/CMakeLists.txt            | 36 +++++++++++++++++++++++++-----
+ freeglut/include/GL/freeglut_std.h |  4 ++++
+ 2 files changed, 35 insertions(+), 5 deletions(-)
+
+diff --git a/freeglut/CMakeLists.txt b/freeglut/CMakeLists.txt
+index 0d7f9c91..a643ef3e 100644
+--- a/freeglut/CMakeLists.txt
++++ b/freeglut/CMakeLists.txt
+@@ -86,7 +86,7 @@ SET(FREEGLUT_SRCS
+     src/fg_window.c
+ )
+ # TODO: OpenGL ES requires a compatible version of these files:
+-IF(NOT FREEGLUT_GLES2 AND NOT FREEGLUT_GLES1)
++IF(NOT FREEGLUT_GLES2 AND NOT FREEGLUT_GLES1 AND NOT IOS)
+     LIST(APPEND FREEGLUT_SRCS
+         src/fg_menu.c
+     )
+@@ -121,7 +121,27 @@ IF(WIN32)
+             ${CMAKE_BINARY_DIR}/freeglutdll.def # generated below from src/freeglutdll.def.in
+         )
+     ENDIF()
+-
++ELSEIF(IOS)
++    LIST(APPEND FREEGLUT_SRCS
++        src/ios/fg_app_delegate.h
++        src/ios/fg_app_delegate.m
++        src/ios/fg_cursor_ios.c
++        src/ios/fg_display_ios.m
++        src/ios/fg_ext_ios.c
++        src/ios/fg_gamemode_ios.c
++        src/ios/fg_init_ios.c
++        src/ios/fg_input_devices_ios.c
++        src/ios/fg_internal_ios.h
++        src/ios/fg_joystick_ios.m
++        src/ios/fg_main_ios.h
++        src/ios/fg_main_ios.m
++        src/ios/fg_spaceball_ios.c
++        src/ios/fg_state_ios.m
++        src/ios/fg_structure_ios.c
++        src/ios/fg_view_controller.h
++        src/ios/fg_view_controller.m
++        src/ios/fg_window_ios.m
++    )
+ ELSEIF(ANDROID)
+     LIST(APPEND FREEGLUT_SRCS
+         src/android/native_app_glue/android_native_app_glue.c
+@@ -192,7 +212,9 @@ ENDIF()
+ #   also need to be defined in client applications (e.g. through
+ #   pkg-config), but use GLES constants directly for all other needs
+ # - define GLES version-specific library
+-IF(FREEGLUT_GLES2)
++IF(IOS)
++  ADD_DEFINITIONS(-DEGL_VERSION_1_0 -DFREEGLUT_GLES1 -fno-objc-arc)
++ELSEIF(FREEGLUT_GLES2)
+   ADD_DEFINITIONS(-DFREEGLUT_GLES2)
+   LIST(APPEND LIBS GLESv2 EGL)
+ ELSEIF(FREEGLUT_GLES1)
+@@ -230,7 +252,7 @@ IF(CMAKE_COMPILER_IS_GNUCC)
+ ENDIF(CMAKE_COMPILER_IS_GNUCC)
+ 
+ INCLUDE(CheckIncludeFiles)
+-IF(UNIX AND NOT ANDROID)
++IF(UNIX AND NOT ANDROID AND NOT IOS)
+     FIND_PACKAGE(X11 REQUIRED)
+     LIST(APPEND LIBS ${X11_LIBRARIES})
+     IF(X11_Xrandr_FOUND)
+@@ -307,6 +329,8 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android" OR
+    ${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR
+    ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+ STRING(TOLOWER -${CMAKE_SYSTEM_NAME} SYSTEM_NAME_LOWERCASE)
++ELSEIF(IOS)
++STRING(TOLOWER -darwin SYSTEM_NAME_LOWERCASE)
+ ELSE()
+ SET(SYSTEM_NAME_LOWERCASE "-other")
+ ENDIF()
+@@ -387,7 +411,9 @@ ELSE()
+       SET(LIBNAME glut)
+     ENDIF()
+ 
+-    SET_TARGET_PROPERTIES(freeglut PROPERTIES VERSION 3.9.0 SOVERSION 3 OUTPUT_NAME ${LIBNAME})
++    IF(FREEGLUT_BUILD_SHARED_LIBS)
++        SET_TARGET_PROPERTIES(freeglut PROPERTIES VERSION 3.9.0 SOVERSION 3 OUTPUT_NAME ${LIBNAME})
++    ENDIF()
+     SET_TARGET_PROPERTIES(freeglut_static PROPERTIES OUTPUT_NAME ${LIBNAME})
+     IF(ANDROID)
+         # Not in CMake toolchain file, because the toolchain
+diff --git a/freeglut/include/GL/freeglut_std.h b/freeglut/include/GL/freeglut_std.h
+index 8381c9a1..f95bb056 100644
+--- a/freeglut/include/GL/freeglut_std.h
++++ b/freeglut/include/GL/freeglut_std.h
+@@ -141,6 +141,10 @@
+ #   endif
+ #elif FREEGLUT_GLES1
+ #   if __APPLE__
++#       ifdef __OBJC__
++#           import <UIKit/UIKit.h>
++#           import <Foundation/Foundation.h>
++#       endif
+ #      include <OpenGLES/ES1/gl.h>
+ #   else
+ #      include <EGL/egl.h>
+-- 
+2.24.3 (Apple Git-128)
+

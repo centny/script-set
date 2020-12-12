@@ -1,0 +1,48 @@
+From d25313cd339b8920b377c885d52f39534e1291a2 Mon Sep 17 00:00:00 2001
+From: centny <centny@gmail.com>
+Date: Sat, 21 Nov 2020 17:55:59 -0800
+Subject: [PATCH] build to ios
+
+---
+ Makefile               | 4 ++--
+ config/Makefile.darwin | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 1da7eac..105b5ce 100644
+--- a/Makefile
++++ b/Makefile
+@@ -41,7 +41,7 @@ $(error "Platform '$(SYSTEM)' not supported")
+ endif
+ 
+ GLEW_PREFIX ?= /usr
+-GLEW_DEST ?= /usr
++GLEW_DEST  = $(GLEW_PREFIX)
+ BINDIR    ?= $(GLEW_DEST)/bin
+ LIBDIR    ?= $(GLEW_DEST)/lib
+ INCDIR    ?= $(GLEW_DEST)/include/GL
+@@ -81,7 +81,7 @@ else
+ OPT = $(POPT)
+ endif
+ INCLUDE = -Iinclude
+-CFLAGS = $(OPT) $(WARN) $(INCLUDE) $(CFLAGS.EXTRA)
++CFLAGS = $(OPT) $(WARN) $(INCLUDE) $(CFLAGS_EXTRA)
+ 
+ all debug: glew.lib glew.bin
+ 
+diff --git a/config/Makefile.darwin b/config/Makefile.darwin
+index 8030f05..e72d450 100644
+--- a/config/Makefile.darwin
++++ b/config/Makefile.darwin
+@@ -13,7 +13,7 @@ LDFLAGS.GL = -L/usr/X11R6/lib -lGL -lX11
+ else
+ CFLAGS.EXTRA += -std=c89
+ GLEW_NO_GLU = -DGLEW_NO_GLU
+-LDFLAGS.GL = -framework OpenGL
++LDFLAGS.GL = -framework OpenGLES
+ endif
+ LDFLAGS.STATIC =
+ LDFLAGS.DYNAMIC =
+-- 
+2.24.3 (Apple Git-128)
+

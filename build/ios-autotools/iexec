@@ -24,10 +24,10 @@ if [ "$#" -lt 1 ]; then
   usage
 fi
 
-# if [ ! -x "./configure" ] ; then
-#   echo "No configure script found."
-#   usage
-# fi
+if [ ! -f "./Makefile" ] ; then
+  echo "No configure script found."
+  usage
+fi
 
 # Build architecture
 export ARCH=$1
@@ -38,13 +38,13 @@ if [ ! -z "$CHOST" ]; then
 else
   case $ARCH in
     armv7 | armv7s )
-      export CHOST=arm-apple-darwin
+      export CHOST=arm-apple-darwin*
       ;;
     arm64 )
-      export CHOST=aarch64-apple-darwin
+      export CHOST=aarch64-apple-darwin*
       ;;
     i386 | x86_64 )
-      export CHOST=$ARCH-apple-darwin
+      export CHOST=$ARCH-apple-darwin*
       ;;
     * )
       usage
@@ -92,7 +92,7 @@ export CXX=$(xcrun --sdk $SDK --find g++)
 export LD=$(xcrun --sdk $SDK --find ld)
 
 # Flags
-export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION -fembed-bitcode"
+export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION -fembed-bitcode -Wno-implicit-function-declaration"
 export CPPFLAGS="$CPPFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION -fembed-bitcode"
 export CXXFLAGS="$CXXFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include"
 export LDFLAGS="$LDFLAGS -arch $ARCH -isysroot $SDKROOT -L$PREFIX/lib"
@@ -105,15 +105,10 @@ echo "using CFLAGS:"$CFLAGS
 echo "using CPPFLAGS:"$CPPFLAGS
 echo "using LDFLAGS:"$LDFLAGS
 echo "using PKG_CONFIG_PATH:"$PKG_CONFIG_PATH
+echo "using CHOST:"$CHOST
 
 # Remove script parameters
 shift 1
 
-echo $CHOST
-
 # Run configure
-../configure \
-	--prefix="$PREFIX" \
-	--host="$CHOST" \
-	--disable-shared \
-	$@
+$@

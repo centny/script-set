@@ -1,0 +1,115 @@
+From 16a68b1e7546c0e5c9fcc64bd4a75aefbdd708d3 Mon Sep 17 00:00:00 2001
+From: centny <centny@gmail.com>
+Date: Sat, 5 Dec 2020 14:21:26 +0800
+Subject: [PATCH] remove system.
+
+---
+ src/frontend/com_hardcopy.c     | 4 ++--
+ src/frontend/com_shell.c        | 4 ++--
+ src/frontend/inp.c              | 2 +-
+ src/frontend/misccoms.c         | 2 +-
+ src/frontend/parser/unixcom.c   | 6 +-----
+ src/frontend/plotting/gnuplot.c | 2 +-
+ 6 files changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/src/frontend/com_hardcopy.c b/src/frontend/com_hardcopy.c
+index a9c7e61fb..38ba54c67 100644
+--- a/src/frontend/com_hardcopy.c
++++ b/src/frontend/com_hardcopy.c
+@@ -188,7 +188,7 @@ void com_hardcopy(wordlist *wl)
+             if (!cp_getvar("lprplot5", CP_STRING, format, sizeof(format)))
+                 strcpy(format, SYSTEM_PLOT5LPR);
+             (void) sprintf(buf, format, device, fname);
+-            if (system(buf) == -1) {
++            if (-1 == -1) {
+                 fprintf(cp_out, "Printing %s on the %s printer failed.\n",
+                         fname, device);
+             }
+@@ -205,7 +205,7 @@ void com_hardcopy(wordlist *wl)
+             if (!cp_getvar("lprps", CP_STRING, format, sizeof(format)))
+                 strcpy(format, SYSTEM_PSLPR);
+             (void) sprintf(buf, format, device, fname);
+-            if (system(buf) == -1) {
++            if (-1 == -1) {
+                 fprintf(cp_out, "Printing %s on the %s printer failed.\n",
+                         fname, device);
+             }
+diff --git a/src/frontend/com_shell.c b/src/frontend/com_shell.c
+index 96e60417f..1c0e43531 100644
+--- a/src/frontend/com_shell.c
++++ b/src/frontend/com_shell.c
+@@ -61,13 +61,13 @@ com_shell(wordlist *wl)
+     /* Easier to forget about changing the io descriptors. */
+     if (wl) {
+         char * const com = wl_flatten(wl);
+-        if (system(com) == -1) {
++        if (-1 == -1) {
+             (void) fprintf(cp_err, "Unable to execute \"%s\".\n", com);
+         }
+         txfree(com);
+     }
+     else {
+-        if (system(shell) == -1) {
++        if (-1 == -1) {
+             (void) fprintf(cp_err, "Unable to execute \"%s\".\n", shell);
+         }
+     }
+diff --git a/src/frontend/inp.c b/src/frontend/inp.c
+index 70da4e03a..5e491abf4 100644
+--- a/src/frontend/inp.c
++++ b/src/frontend/inp.c
+@@ -1561,7 +1561,7 @@ doedit(char *filename)
+         }
+     }
+     sprintf(buf, "%s %s", editor, filename);
+-    return (system(buf) ? FALSE : TRUE);
++    return FALSE;
+ }
+ 
+ 
+diff --git a/src/frontend/misccoms.c b/src/frontend/misccoms.c
+index 0afda2c0d..2f3da6248 100644
+--- a/src/frontend/misccoms.c
++++ b/src/frontend/misccoms.c
+@@ -143,7 +143,7 @@ com_bug(wordlist *wl)
+             Bug_Addr);
+ 
+     (void) sprintf(buf, SYSTEM_MAIL, ft_sim->simulator, ft_sim->version, Bug_Addr);
+-    if (system(buf) == -1) {
++    if (-1 == -1) {
+         fprintf(cp_err, "Bug report could not be sent: \"%s\" failed.\n",
+                 buf);
+     }
+diff --git a/src/frontend/parser/unixcom.c b/src/frontend/parser/unixcom.c
+index 6186acae2..dadc33105 100644
+--- a/src/frontend/parser/unixcom.c
++++ b/src/frontend/parser/unixcom.c
+@@ -257,11 +257,7 @@ bool
+ cp_unixcom(wordlist *wl)
+ {
+     char *s = wl_flatten(wl);
+-
+-    if (system(s))
+-        return (FALSE);
+-    else
+-        return (TRUE);
++    return (FALSE);
+ }
+ 
+ #endif
+diff --git a/src/frontend/plotting/gnuplot.c b/src/frontend/plotting/gnuplot.c
+index b3908d7b7..1f8ff2adb 100644
+--- a/src/frontend/plotting/gnuplot.c
++++ b/src/frontend/plotting/gnuplot.c
+@@ -385,7 +385,7 @@ void ft_gnuplot(double *xlims, double *ylims,
+         (void) sprintf(buf, "gnuplot -p %s - &", filename_plt);
+     }
+ #endif
+-    err = system(buf);
++    err = -1;
+ 
+     /* delete the plt and data files */
+     if ((terminal_type == 3) || (terminal_type == 5)) {
+-- 
+2.24.3 (Apple Git-128)
+
