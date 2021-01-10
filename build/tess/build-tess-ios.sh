@@ -49,37 +49,37 @@ case $1 in
     ;;
 esac
 
-# cd $source_dir/libjpeg/
-# autoreconf -fi
-# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
-# make -j $runc
-# make install
-# cd ../
+cd $source_dir/libjpeg/
+autoreconf -fi
+$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+make clean
+make -j $runc
+make install
+cd ../
 
-# cd $source_dir/libpng/
-# autoreconf -fi
-# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
-# make -j $runc
-# make install
-# cd ../
+cd $source_dir/libpng/
+autoreconf -fi
+$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+make clean
+make -j $runc
+make install
+cd ../
 
-# cd $source_dir/tiff/
-# autoreconf -fi
-# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
-# make -j $runc
-# make install
-# cd ../
+cd $source_dir/tiff/
+autoreconf -fi
+$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+make clean
+make -j $runc
+make install
+cd ../
 
-# cd $source_dir/libwebp
-# ./autogen.sh
-# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
-# make -j $runc
-# make install
-# cd ../
+cd $source_dir/libwebp
+./autogen.sh
+$script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+make clean
+make -j $runc
+make install
+cd ../
 
 cd $source_dir/openjpeg
 rm -rf build

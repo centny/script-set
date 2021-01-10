@@ -43,8 +43,8 @@ system test thread timer type_erasure wave"
 BOOTSTRAP_LIBS=""
 
 MIN_IOS_VERSION=11.0
-IOS_SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
-IOS_SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
+IOS_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+IOS_SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
 IOSSIM_SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
 
 MIN_TVOS_VERSION=11.0
@@ -74,7 +74,7 @@ THREADS="-j$(sysctl -n hw.ncpu)"
 CURRENT_DIR=$(pwd)
 SRCDIR="$CURRENT_DIR/src"
 
-IOS_DEV_CMD="xcrun --sdk iphoneos"
+IOS_DEV_CMD="xcrun --sdk iphonesimulator"
 IOS_SIM_DEV_CMD="xcrun --sdk iphonesimulator"
 TVOS_DEV_CMD="xcrun --sdk appletvos"
 TVOS_SIM_DEV_CMD="xcrun --sdk appletvsimulator"
@@ -93,7 +93,7 @@ sdkVersion()
     echo "${VERSION[0]}.${VERSION[1]}"
 }
 
-IOS_SDK_VERSION=$(sdkVersion iphoneos)
+IOS_SDK_VERSION=$(sdkVersion iphonesimulator)
 TVOS_SDK_VERSION=$(sdkVersion appletvos)
 MACOS_SDK_VERSION=$(sdkVersion macosx)
 

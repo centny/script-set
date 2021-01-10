@@ -169,34 +169,33 @@ runc=16
 # make install
 # cd ../../
 
-# # build wxwidgets
-# cd $source_dir/wxwidgets
+# build wxwidgets
+cd /Users/cny/git/wxWidgets
 # rm -rf build_osx
-# mkdir -p build_osx
-# cd build_osx
-# cmake ..  -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DBUILD_MODULE_Draw=OFF -Wno-dev -DBUILD_LIBRARY_TYPE=Static
-# make clean
-# make -j $runc
-# make install
-# cd ../../
+mkdir -p build_osx
+cd build_osx
+cmake ..  -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DBUILD_MODULE_Draw=OFF -Wno-dev -DBUILD_LIBRARY_TYPE=Static
+make clean
+make -j $runc
+make install
+cd ../../
 
 # # build ngspice
 # cd $source_dir/ngspice
-# CFLAGS=-Wno-implicit-function-declaration $script_dir/../ios-autotools/iconfigure $1 --with-ngshared --disable-debug
-# make clean
+# ./configure --prefix=$install_dir --with-ngshared --enable-xspice --enable-cider --disable-debug
+# # make clean
 # make -j $runc
 # make install
-# cd ../
 
-# build kicad
-cd /Users/cny/git/kicad/kicad/
-rm -rf build/osx
-mkdir -p build/osx
-cd build/osx
-set -xe
-cmake ../../ -Wno-dev -DCMAKE_BUILD_TYPE=Release \
-    -DKICAD_SCRIPTING=OFF -DKICAD_USER_PLUGIN=OFF -DKICAD_USE_OCE=OFF \
-    -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
-    -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
-    -DKICAD_BUILD_QA_TESTS=OFF -DUSE_KIWAY_DLLS=OFF
-# make -j $runc
+# # build kicad
+# cd /Users/cny/git/kicad/kicad/
+# rm -rf build/osx/
+# mkdir -p build/osx
+# cd build/osx
+# set -xe
+# cmake ../../ -G Xcode -Wno-dev -DCMAKE_BUILD_TYPE=Debug \
+#     -DKICAD_SCRIPTING=OFF -DKICAD_USER_PLUGIN=OFF -DKICAD_USE_OCE=OFF \
+#     -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
+#     -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
+#     -DKICAD_BUILD_QA_TESTS=OFF -DUSE_KIWAY_DLLS=OFF -DPCB_VIEWER=ON -DSCH_VIEWER=ON
+# # # make -j $runc
