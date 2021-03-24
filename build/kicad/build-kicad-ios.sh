@@ -53,17 +53,6 @@ echo "running by sdk:"$SDKVERSION
 echo "running by platform:"$platform
 echo "running by runc:"$runc
 
-# build wxwidgets
-cd /Users/cny/git/wxWidgets
-# rm -rf build_ios
-mkdir -p build_ios
-cd build_ios
-$script_dir/../ios-autotools/iconfigure $1 --with-iphone --enable-monolithic --enable-aui --enable-glcanvasegl=yes --enable-debug
-# make clean
-make -j $runc
-make install
-# cd ../
-
 # # build glew
 # cd $source_dir/glew
 # export source_dir
@@ -137,7 +126,7 @@ make install
 
 # # build oce
 # cd $source_dir/oce
-# # rm -rf build
+# rm -rf build
 # mkdir -p build
 # cd build
 # cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -DBUILD_MODULE_Draw=OFF -Wno-dev -DBUILD_LIBRARY_TYPE=Static
@@ -146,7 +135,7 @@ make install
 # make install
 # cd ../../
 
-# build ngspice
+# # build ngspice
 # cd $source_dir/ngspice
 # ./autogen.sh
 # export ac_cv_func_malloc_0_nonnull=yes
@@ -173,18 +162,51 @@ make install
 # make install
 # cd ../../
 
-# # build kicad
+# # build expat
+# cd $source_dir/libexpat/expat/
+# ./buildconf.sh
+# $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
+# make -j $runc
+# make install
+# cd ../
+
+# # build wxwidgets
+# cd /Users/cny/git/wxWidgets
+# rm -rf build_ios_$1
+# mkdir -p build_ios_$1
+# cd build_ios_$1
+# $script_dir/../ios-autotools/iconfigure $1 --with-iphone --with-expat=builtin --enable-monolithic --enable-aui --enable-glcanvasegl=yes --enable-debug
+# # # make clean
+# make -j $runc
+# make install
+# cd ../
+
+# build kicad
 cd /Users/cny/git/kicad/kicad/
-rm -rf build/ios_x86_64
-mkdir -p build/ios_x86_64
-cd build/ios_x86_64
-cmake ../../ -G Xcode -Wno-dev \
-    -DKICAD_SCRIPTING=OFF -DKICAD_USE_EGL=ON -DKICAD_USER_PLUGIN=OFF -DKICAD_USE_OCE=OFF \
-    -DKICAD_USE_OCC=ON -DOCC_INCLUDE_DIR=$install_dir/include/opencascade/ \
-    -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
-    -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform \
-    -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
-    -DLEMON_EXE=$install_dir/bin/lemon \
-    -DKICAD_BUILD_QA_TESTS=OFF -DUSE_KIWAY_DLLS=OFF -DKICAD_SPICE=OFF -DPCB_VIEWER=ON -DSCH_VIEWER=ON\
-    -DARCHS=$1 -DENABLE_BITCODE=ON -DCMAKE_CXX_FLAGS=-fno-objc-arc
-# # make pcbnew -j$runc
+if [ "$2" == "" ];then
+    # rm -rf build/ios_$1
+    mkdir -p build/ios_$1
+    cd build/ios_$1
+else
+    # rm -rf build/ios_$1_xc
+    mkdir -p build/ios_$1_xc
+    cd build/ios_$1_xc
+fi
+
+# cmake ../../ $2 -Wno-dev -DCMAKE_BUILD_TYPE=Debug \
+#     -DKICAD_SCRIPTING=OFF -DKICAD_USE_EGL=ON -DKICAD_USER_PLUGIN=OFF -DBUILD_GITHUB_PLUGIN=OFF \
+#     -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON -DOCC_INCLUDE_DIR=$install_dir/include/opencascade/ \
+#     -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
+#     -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform \
+#     -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
+#     -DLEMON_EXE=$install_dir/bin/lemon \
+#     -DKICAD_BUILD_QA_TESTS=OFF -DUSE_KIWAY_DLLS=OFF -DKICAD_SPICE=OFF \
+#     -DARCHS=$1 -DENABLE_BITCODE=ON -DCMAKE_CXX_FLAGS=-fno-objc-arc
+
+if [ "$2" == "" ];then
+    # make -j$runc 3d-viewer connectivity pnsrouter pcad2kicadpcb lib_dxf idf3 legacy_wx legacy_gal viewer_kiface eeschema_kiface pcbnew_kiface_objects s3d_plugin_idf s3d_plugin_vrml s3d_plugin_oce 
+    make -j$runc viewer
+    mkdir -p ../../out/$1/include ../../out/$1/lib
+    find . -name '*.a' -exec cp {} ../../out/$1/lib \;
+    cp -f config.h ../../out/$1/include
+fi

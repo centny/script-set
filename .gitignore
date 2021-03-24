@@ -4,3 +4,6 @@ minici/www
 *.out
 minici/coverage.json
 minici/coverage.html
+build/boost/ios
+*.log
+*.bz2

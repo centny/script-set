@@ -42,9 +42,9 @@ math metaparse mpi program_options python random regex serialization signals2
 system test thread timer type_erasure wave"
 BOOTSTRAP_LIBS=""
 
-MIN_IOS_VERSION=11.0
-IOS_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
-IOS_SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
+MIN_IOS_VERSION=9.0
+IOS_SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+IOS_SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
 IOSSIM_SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
 
 MIN_TVOS_VERSION=11.0

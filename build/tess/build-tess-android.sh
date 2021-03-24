@@ -9,7 +9,7 @@ absdir() {
 script_dir=`dirname ${0}`
 install_dir=$HOME/deps/android/$1/
 source_dir=$HOME/deps_src/
-ndk_dir=$HOME/Android/Sdk/ndk-bundle
+ndk_dir=$HOME/android/`uname`/ndk-bundle
 
 if [ ! -z "$PREFIX" ];then
     install_dir=$PREFIX
@@ -144,19 +144,19 @@ make -j $runc
 make install
 cd ../../
 
-cd $source_dir/leptonica
-autoreconf -fi
-./configure --prefix=$install_dir --enable-shared=no --host $TARGET
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/leptonica
+# autoreconf -fi
+# ./configure --prefix=$install_dir --enable-shared=no --host $TARGET
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
-cd $source_dir/tesseract
-autoreconf -fi
-./configure --prefix=$install_dir --enable-shared=no --host $TARGET
-make clean
-make -j $runc
-make install
-cd ../
+# cd $source_dir/tesseract
+# autoreconf -fi
+# ./configure --prefix=$install_dir --enable-shared=no --host $TARGET
+# make clean
+# make -j $runc
+# make install
+# cd ../
 
