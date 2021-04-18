@@ -7,3 +7,4 @@ minici/coverage.html
 build/boost/ios
 *.log
 *.bz2
+.DS_Store

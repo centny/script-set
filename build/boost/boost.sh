@@ -42,7 +42,7 @@ math metaparse mpi program_options python random regex serialization signals2
 system test thread timer type_erasure wave"
 BOOTSTRAP_LIBS=""
 
-MIN_IOS_VERSION=9.0
+MIN_IOS_VERSION=11.0
 IOS_SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
 IOS_SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
 IOSSIM_SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
@@ -72,7 +72,7 @@ COMPILER="$XCODE_ROOT/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 THREADS="-j$(sysctl -n hw.ncpu)"
 
 CURRENT_DIR=$(pwd)
-SRCDIR="$CURRENT_DIR/src"
+SRCDIR="$HOME/deps_src"
 
 IOS_DEV_CMD="xcrun --sdk iphonesimulator"
 IOS_SIM_DEV_CMD="xcrun --sdk iphonesimulator"
@@ -599,7 +599,7 @@ updateBoost()
     cat > "$BOOST_SRC/tools/build/src/user-config.jam" <<EOF
 using darwin : $COMPILER_VERSION~iphone
 : $COMPILER
-: <architecture>arm
+: <architecture>arm64
   <target-os>iphone
   <cxxflags>"$CXX_FLAGS"
   <linkflags>"$LD_FLAGS"
@@ -609,7 +609,7 @@ using darwin : $COMPILER_VERSION~iphone
 ;
 using darwin : $COMPILER_VERSION~iphonesim
 : $COMPILER
-: <architecture>x86
+: <architecture>x86_64
   <target-os>iphone
   <cxxflags>"$CXX_FLAGS"
   <linkflags>"$LD_FLAGS"
