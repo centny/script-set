@@ -56,7 +56,7 @@ echo "running by runc:"$runc
 cd $source_dir/libjpeg/
 autoreconf -fi
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 make -j $runc
 make install
 cd ../
@@ -64,7 +64,7 @@ cd ../
 cd $source_dir/libpng/
 autoreconf -fi
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 make -j $runc
 make install
 cd ../
@@ -72,7 +72,7 @@ cd ../
 cd $source_dir/tiff/
 autoreconf -fi
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 make -j $runc
 make install
 cd ../
@@ -80,7 +80,7 @@ cd ../
 cd $source_dir/libwebp
 ./autogen.sh
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 make -j $runc
 make install
 cd ../
@@ -90,7 +90,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DARCHS=$1 -DBUILD_SHARED_LIBS:BOOL=OFF -DENABLE_BITCODE=ON
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -103,7 +102,7 @@ cp -rf glm $install_dir/include/
 cd $source_dir/pixman
 ./autogen.sh
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 make -j $runc
 make install
 cd ../
@@ -112,7 +111,7 @@ cd ../
 cd $source_dir/cairo
 ./autogen.sh
 $script_dir/../ios-autotools/iconfigure $1 --enable-shared=no
-# make clean
+make clean
 CPPFLAGS=-DDEBUG CFLAGS="-g -O0" make -j $runc
 make install
 cd ../
@@ -123,7 +122,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -Wno-dev
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -134,7 +132,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -Wno-dev -DHB_HAVE_FREETYPE=ON
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -145,7 +142,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -Wno-dev
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -156,7 +152,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -DBUILD_MODULE_Draw=OFF -Wno-dev -DBUILD_LIBRARY_TYPE=Static
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -167,7 +162,6 @@ rm -rf build
 mkdir -p build
 cd build
 cmake ..  -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir -DARCHS=$1 -DENABLE_BITCODE=ON -DBUILD_MODULE_Draw=OFF -Wno-dev -DBUILD_LIBRARY_TYPE=Static
-# make clean
 make -j $runc
 make install
 cd ../../
@@ -178,15 +172,15 @@ rm -rf build_ios_$1
 mkdir -p build_ios_$1
 cd build_ios_$1
 $script_dir/../ios-autotools/iconfigure $1 --with-iphone --with-expat=builtin --enable-monolithic --enable-aui --enable-glcanvasegl=yes --enable-debug
-# # make clean
 make -j $runc
 make install
+cp -rf ../include/wx $install_dir/include/wx-3.1/
 cd ../
 
 # build kicad
 cd /Users/cny/git/kicad/kicad/
 if [ "$2" == "" ];then
-    # rm -rf build/ios_$1
+    rm -rf build/ios_$1
     mkdir -p build/ios_$1
     cd build/ios_$1
 else
