@@ -6,16 +6,17 @@ absdir() {
   echo "$(cd "$1" && pwd)"
 }
 
-base_dir=/Volumes/DataD/
-if [ ! -z "$BASE" ];then
-    ndk_dir=$BASE
-fi
+ostype=`uname`
 script_dir=`dirname ${0}`
-install_dir=$base_dir/deps/android/$1/
-source_dir=$base_dir/deps_src/
-sdk_dir=$base_dir/android/`uname`
-ndk_dir=$sdk_dir/ndk-bundle
-ndk_sys=$ndk_dir/sysroot
+install_dir=$HOME/deps/android/$1/
+source_dir=$HOME/deps_src/
+if [ "$ostype" == "Darwin" ];then
+    sdk_dir=$HOME/Library/Android/sdk
+    ndk_dir=$sdk_dir/ndk-bundle
+else
+    sdk_dir=$HOME/Android/sdk
+    ndk_dir=$sdk_dir/ndk-bundle
+fi
 
 mkdir -p $install_dir
 script_dir=$(absdir $script_dir)
@@ -53,8 +54,8 @@ cd $source_dir/qt-everywhere-src
 # rm -rf build_$1
 mkdir -p build_$1
 cd build_$1
-../configure --help -nomake examples -skip qtdeclarative -static -opensource -confirm-license -xplatform android-clang -prefix $install_dir -android-ndk $ndk_dir -android-sdk $sdk_dir -android-arch $target_abi
+# ../configure -nomake examples -skip qtdeclarative -static -opensource -confirm-license -xplatform android-clang -prefix $install_dir -android-ndk $ndk_dir -android-sdk $sdk_dir -android-arch $target_abi
 # make clean
-# make -j $runc
-# make install
+make -j $runc
+make install
 # cd ../

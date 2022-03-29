@@ -4,7 +4,7 @@
 			"path": "../.."
 		},
 		{
-			"path": "../../../deps_src"
+			"path": "/Users/cny/deps_src"
 		}
 	],
 	"settings": {}

@@ -42,6 +42,10 @@ echo "running by install dir:"$install_dir
 echo "running by platform:"$platform
 echo "running by runc:"$runc
 
+if [ -f "$install_dir/.boost" ];then
+  echo "boost is complied, skipp it"
+  exit 0
+fi
 
 MIN_IOS_VERSION=11.0
 IOS_SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
@@ -88,3 +92,5 @@ EOF
     link=static \
     variant=release \
     install
+
+echo 1 > $install_dir/.boost
