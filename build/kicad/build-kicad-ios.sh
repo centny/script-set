@@ -236,13 +236,13 @@ if [ -f "$install_dir/.wxWidgets" ];then
     echo "wxWidgets is complied, skipp it"
 else
     cd ~/git/wxWidgets
-    rm -rf build_ios_$1
+    # rm -rf build_ios_$1
     mkdir -p build_ios_$1
     cd build_ios_$1
     $script_dir/../ios-autotools/iconfigure $1 --with-iphone --with-expat=builtin --enable-monolithic --enable-aui --enable-glcanvasegl=yes --enable-debug
     make -j $runc
     make install
-    cp -rf ../include/wx $install_dir/include/wx-3.1/
+    cp -rf ../include/wx $install_dir/include/wx-3.3/
     cd ../
     echo 1 > $install_dir/.wxWidgets
 fi
@@ -253,7 +253,7 @@ if [ -f "$install_dir/.kicad" ];then
 else
     cd ~/git/kicad/kicad/
     if [ "$2" == "" ];then
-        rm -rf build/ios_$1
+        # rm -rf build/ios_$1
         mkdir -p build/ios_$1
         cd build/ios_$1
     else
@@ -265,7 +265,7 @@ else
     cmake ../../ $2 -Wno-dev -DCMAKE_BUILD_TYPE=Debug \
         -DKICAD_SCRIPTING=OFF -DKICAD_USE_EGL=ON -DKICAD_USER_PLUGIN=OFF -DBUILD_GITHUB_PLUGIN=OFF \
         -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON -DOCC_INCLUDE_DIR=$install_dir/include/opencascade/ \
-        -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
+        -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.3/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
         -DCMAKE_TOOLCHAIN_FILE=$script_dir/../ios-cmake/ios.toolchain.cmake -DPLATFORM=$platform \
         -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
         -DLEMON_EXE=$install_dir/bin/lemon \

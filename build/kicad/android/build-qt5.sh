@@ -8,20 +8,14 @@ absdir() {
 
 ostype=`uname`
 script_dir=`dirname ${0}`
-install_dir=$HOME/deps/android/$1/
-source_dir=$HOME/deps_src/
-if [ "$ostype" == "Darwin" ];then
-    sdk_dir=$HOME/Library/Android/sdk
-    ndk_dir=$sdk_dir/ndk-bundle
-else
-    sdk_dir=$HOME/Android/sdk
-    ndk_dir=$sdk_dir/ndk-bundle
-fi
+source_dir=$DEPS_SRC/
+install_dir=$DEPS_BIN/android/
+sdk_dir=$ANDROID_SDK
+ndk_dir=$ANDROID_NDK
 
 mkdir -p $install_dir
 script_dir=$(absdir $script_dir)
 install_dir=$(absdir $install_dir)
-source_dir=$(absdir $source_dir)
 echo "running by source dir:"$source_dir
 echo "running by install dir:"$install_dir
 echo "running by source dir:"$source_dir
@@ -58,4 +52,4 @@ cd build_$1
 # make clean
 make -j $runc
 make install
-# cd ../
+cd ../

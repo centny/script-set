@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 absdir() {
   echo "$(cd "$1" && pwd)"
@@ -247,7 +247,7 @@ if [ -f "$install_dir/.cairo" ];then
 else
     cd $source_dir/cairo
     autoreconf -v --install
-    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir 
+    ./configure --host $TARGET --enable-shared=no --enable-gobject=no -without-x --disable-xlib --disable-xlib-xrender --disable-directfb  --disable-win32 --disable-pdf --disable-ps --disable-svg --enable-png --disable-interpreter --disable-xlib-xcb --disable-xcb --disable-xcb-shm --prefix=$install_dir
     # make clean
     make -j $runc
     make install
@@ -261,10 +261,11 @@ if [ -f "$install_dir/.freetype" ];then
 else
     cd $source_dir/freetype
     ./autogen.sh
-    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir --with-harfbuzz=no
+    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir --with-harfbuzz=no --with-brotli=no
     make -j $runc
     make install
     cd ../
+    echo 1 > $install_dir/.freetype
 fi
 
 # build harfbuzz
@@ -273,24 +274,11 @@ if [ -f "$install_dir/.harfbuzz" ];then
 else
     cd $source_dir/harfbuzz
     NOCONFIGURE=1 ./autogen.sh
-    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir --with-freetype=yes --with-cairo=yes
+    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir --with-freetype=no --with-cairo=no -with-glib=no
     make -j $runc
     make install
     cd ../
     echo 1 > $install_dir/.harfbuzz
-fi
-
-# build freetype
-if [ -f "$install_dir/.freetype" ];then
-    echo "freetype is complied, skipp it"
-else
-    cd $source_dir/freetype
-    ./autogen.sh
-    ./configure --host $TARGET --enable-shared=no --prefix=$install_dir --with-harfbuzz=yes
-    make -j $runc
-    make install
-    cd ../
-    echo 1 > $install_dir/.freetype
 fi
 
 # build oce
@@ -331,20 +319,22 @@ fi
 if [ -f "$install_dir/.wxWidgets" ];then
     echo "wxWidgets is complied, skipp it"
 else
-    pkg-config --exists --print-errors "Qt5Core Qt5Widgets Qt5Gui Qt5OpenGL Qt5Test"
-    cd ~/test/wxWidgets
+    export PKG_CONFIG_PATH=/Users/cny/deps/android/arm64/lib/pkgconfig
+    pkg-config --print-requires-private "gobject-2.0"
+    cd ~/git/wxWidgets
     # rm -rf build_android_$1
     mkdir -p build_android_$1
     cd build_android_$1
     # LDFLAGS="-L$install_dir/lib/ -lGLESv2 -lQt5Gui_arm64-v8a -lqtharfbuzz_arm64-v8a -lqtlibpng_arm64-v8a -lQt5Core_arm64-v8a -lqtpcre2_arm64-v8a -llog" ../configure --prefix=$install_dir --with-qt --host $TARGET --with-expat=builtin --enable-monolithic --enable-aui --enable-glcanvasegl=yes --enable-debug --enable-shared=no
-    ../configure --with-qt --enable-debug \
-        --host=$TARGET  --disable-compat28 --disable-shared \
-        --disable-arttango --enable-image --disable-dragimage --disable-sockets \
-        --with-libtiff=no --without-opengl --disable-baseevtloop --disable-utf8
+    ../configure --prefix=$install_dir --with-qt --without-libcurl \
+        --host=$TARGET --disable-shared \
+        --disable-arttango --enable-image --disable-dragimage \
+        --with-libtiff=no --enable-glcanvasegl=yes --disable-utf8 --with-cairo=yes
     # make clean
     make -j $runc
     make install
-    cd ../
+    cp -rf ../include/wx $install_dir/include/wx-3.3/
+    # cd ../
     echo 1 > $install_dir/.wxWidgets
 fi
 
@@ -386,27 +376,20 @@ if [ -f "$install_dir/.kicad" ];then
     echo "kicad is complied, skipp it"
 else
     cd /Users/cny/git/kicad/kicad/
-    if [ "$2" == "" ];then
-        rm -rf build_android_$1
-        mkdir -p build_android_$1
-        cd build_android_$1
-    else
-        # rm -rf build/ios_$1_xc
-        mkdir -p build/ios_$1_xc
-        cd build/ios_$1_xc
-    fi
+    rm -rf build_android_$1
+    mkdir -p build_android_$1
+    cd build_android_$1
     pkg-config --exists --print-errors "cairo"
     cmake ../ $2 -Wno-dev -DCMAKE_BUILD_TYPE=Debug \
         -DKICAD_SCRIPTING=OFF -DKICAD_USE_EGL=ON -DKICAD_USER_PLUGIN=OFF -DBUILD_GITHUB_PLUGIN=OFF \
         -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON -DOCC_INCLUDE_DIR=$install_dir/include/opencascade/ \
-        -DwxWidgets_INCLUDE_DIRS=$install_dir/include/wx-3.1/ -DwxWidgets_LIBRARIES=$install_dir/lib/ \
         -DCMAKE_INSTALL_PREFIX:PATH=$install_dir -DCMAKE_PREFIX_PATH=$install_dir \
         -DKICAD_BUILD_QA_TESTS=OFF -DUSE_KIWAY_DLLS=OFF -DKICAD_SPICE=OFF \
-        -DGLM_ROOT_DIR=$install_dir/include/glm/ \
+        -DGLM_INCLUDE_DIR=$install_dir/include/ \
         -DANDROID_ABI=$CMAKE_ABI\
         -DCMAKE_TOOLCHAIN_FILE=$ndk_dir/build/cmake/android.toolchain.cmake\
         -DANDROID_NATIVE_API_LEVEL=$API
-
+    
     if [ "$2" == "" ];then
         # make -j$runc 3d-viewer connectivity pnsrouter pcad2kicadpcb lib_dxf idf3 legacy_wx legacy_gal viewer_kiface eeschema_kiface pcbnew_kiface_objects s3d_plugin_idf s3d_plugin_vrml s3d_plugin_oce 
         make -j$runc viewer

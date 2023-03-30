@@ -54,7 +54,8 @@ cd $source_dir/qt-everywhere-src
 # rm -rf build_$1
 mkdir -p build_$1
 cd build_$1
-../configure -nomake examples -skip qtdeclarative -static -opensource -confirm-license -xplatform android-clang -prefix $install_dir -android-ndk $ndk_dir -android-sdk $sdk_dir -android-arch $target_abi
+../configure -nomake examples -skip qtdeclarative -static -opensource -confirm-license -xplatform android-clang -prefix $install_dir -android-ndk $ndk_dir -android-sdk $sdk_dir -android-arch $target_abi --help
+exit 1
 # make clean
 make -j $runc
 make install
